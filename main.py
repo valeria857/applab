@@ -24,7 +24,7 @@ def main(page: ft.Page):
         modulo = importlib.import_module(f"apps.{info_modulo.name}")
         botones.append(
             ft.Button(
-                text=info_modulo.name,
+                content=ft.Text(info_modulo.name),
                 on_click=lambda evento, nombre=info_modulo.name: cargar_app(nombre),
             )
         )
@@ -36,6 +36,6 @@ if __name__ == "__main__":
     ft.run(
         main,
         view=ft.AppView.WEB_BROWSER,
-        host="0.0.0.0",
+        host="localhost",
         port=int(os.getenv("PORT", 7860)),
     )

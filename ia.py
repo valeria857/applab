@@ -4,9 +4,6 @@ import re
 import httpx
 
 
-MODELO = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODELO}:generateContent"
-
 _MENSAJES_HTTP = {
     400: "Solicitud inválida a Gemini (400). Revisa el contenido y los parámetros enviados.",
     403: "Gemini rechazó la solicitud (403). Verifica la API key y los permisos del proyecto.",
@@ -20,17 +17,21 @@ def ia(instruccion, texto, como_json=False):
     if not api_key:
         raise RuntimeError("Falta configurar la variable de entorno GEMINI_API_KEY.")
 
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        f"gemini-2.5-flash:generateContent?key={api_key}"
+    )
     payload = {
-        "systemInstruction": {"parts": [{"text": instruccion}]},
-        "contents": [{"parts": [{"text": texto}]}],
+        "contents": [
+            {"parts": [{"text": f"{instruccion}\n\n{texto}"}]}
+        ]
     }
     if como_json:
         payload["generationConfig"] = {"responseMimeType": "application/json"}
 
     try:
         respuesta = httpx.post(
-            URL,
-            headers={"x-goog-api-key": api_key},
+            url,
             json=payload,
             timeout=60.0,
         )
