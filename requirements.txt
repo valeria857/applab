@@ -2,3 +2,5 @@ flet
 flet-web
 httpx
 pyttsx3
+google-genai
+gtts
